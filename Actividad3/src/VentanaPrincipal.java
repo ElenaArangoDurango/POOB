@@ -50,7 +50,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         calcularBtn.setBounds(40, y, 100, h);
         limpiarBtn.setBounds(150, y, 100, h);
 
-        // 🔴 MUY IMPORTANTE: registrar listeners
         calcularBtn.addActionListener(this);
         limpiarBtn.addActionListener(this);
         y += 40;
