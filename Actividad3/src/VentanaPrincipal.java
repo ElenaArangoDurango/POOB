@@ -11,30 +11,27 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JTextField campo1, campo2, campo3, campo4, campo5;
     private JButton calcularBtn, limpiarBtn;
 
-    // ✅ Evita el constructor deprecado:
-    // private final Locale ES = new Locale("es", "CO");
-    private static final Locale ES = Locale.forLanguageTag("es-CO"); // o Locale.of("es","CO") en Java 19+
+    private static final Locale ES = Locale.forLanguageTag("es-CO");
 
     public VentanaPrincipal() {
         setTitle("Notas");
-        setSize(300, 350);                 // ✅ sin nombres de parámetro
+        setSize(300, 380);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);               // ✅ sin nombres de parámetro
+        setResizable(false);
         initUI();
     }
 
     private void initUI() {
         cont = getContentPane();
-        cont.setLayout(null);              // ✅ null directo
+        cont.setLayout(null);
 
-        // ✅ Constructores correctos
-        nota1 = new JLabel("Nota 1:");
-        nota2 = new JLabel("Nota 2:");
-        nota3 = new JLabel("Nota 3:");
-        nota4 = new JLabel("Nota 4:");
+        // Etiquetas
+        nota1 = new JLabel("Nota 1:"); nota2 = new JLabel("Nota 2:");
+        nota3 = new JLabel("Nota 3:"); nota4 = new JLabel("Nota 4:");
         nota5 = new JLabel("Nota 5:");
 
+        // Campos alineados a la derecha
         campo1 = new JTextField(); campo1.setHorizontalAlignment(JTextField.RIGHT);
         campo2 = new JTextField(); campo2.setHorizontalAlignment(JTextField.RIGHT);
         campo3 = new JTextField(); campo3.setHorizontalAlignment(JTextField.RIGHT);
@@ -52,6 +49,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         limpiarBtn  = new JButton("Limpiar");
         calcularBtn.setBounds(40, y, 100, h);
         limpiarBtn.setBounds(150, y, 100, h);
+
+        // 🔴 MUY IMPORTANTE: registrar listeners
         calcularBtn.addActionListener(this);
         limpiarBtn.addActionListener(this);
         y += 40;
@@ -75,6 +74,44 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         cont.add(promedioLbl); cont.add(desviacionLbl);
         cont.add(mayorLbl); cont.add(menorLbl);
     }
-    
-    // ... (resto igual: actionPerformed, calcular(), limpiar())
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == calcularBtn) calcular();
+        if (e.getSource() == limpiarBtn)  limpiar();
+    }
+
+    private void calcular() {
+        try {
+            Notas n = new Notas();
+            // aquí usamos punto decimal (4.3). Si quieres aceptar coma, te doy otra versión.
+            n.listaNotas[0] = Double.parseDouble(campo1.getText().trim());
+            n.listaNotas[1] = Double.parseDouble(campo2.getText().trim());
+            n.listaNotas[2] = Double.parseDouble(campo3.getText().trim());
+            n.listaNotas[3] = Double.parseDouble(campo4.getText().trim());
+            n.listaNotas[4] = Double.parseDouble(campo5.getText().trim());
+
+            double prom = n.calcularPromedio();
+            double desv = n.calcularDesviacion();
+
+            promedioLbl.setText("Promedio = " + String.format(ES, "%.2f", prom));
+            desviacionLbl.setText("Desviación estándar = " + String.format(ES, "%.2f", desv));
+            mayorLbl.setText("Valor mayor = " + String.format(ES, "%.1f", n.calcularMayor()));
+            menorLbl.setText("Valor menor = " + String.format(ES, "%.1f", n.calcularMenor()));
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                "Ingresa 5 números válidos (usa punto decimal, ej: 4.3).",
+                "Entrada inválida",
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void limpiar() {
+        campo1.setText(""); campo2.setText(""); campo3.setText("");
+        campo4.setText(""); campo5.setText("");
+        promedioLbl.setText("Promedio = ");
+        desviacionLbl.setText("Desviación estándar = ");
+        mayorLbl.setText("Valor mayor = ");
+        menorLbl.setText("Valor menor = ");
+    }
 }

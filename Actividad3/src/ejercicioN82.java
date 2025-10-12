@@ -1,6 +1,6 @@
 import javax.swing.UIManager;
 
-public class ejercicioN28 {
+public class ejercicioN82 {
     public static void main(String[] args) {
         // Look & Feel del sistema para que se vea como en Windows
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
