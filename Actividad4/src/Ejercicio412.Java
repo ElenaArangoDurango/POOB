@@ -1,12 +1,6 @@
-import java.util.Scanner;
-
-public class VentanaPrincipal {
-     public static void main(String args[]) {
- System.out.print("Valor numérico = ");
- Scanner teclado = new Scanner(System.in);
- double valor = teclado.nextDouble();
-  calcularLogaritmoNeperiano(valor);
-  calcularRaízCuadrada(valor);
- }
- }
+public class Ejercicio412 {
+    public static void main(String[] args) {
+        VentanaPrincipal ventana = new VentanaPrincipal();
+        ventana.setVisible(true);
+    }
 }
