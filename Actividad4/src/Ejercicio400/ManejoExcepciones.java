@@ -1,3 +1,4 @@
+package Ejercicio400;
 public class ManejoExcepciones {
 
     public static void ejecutarBloques() {

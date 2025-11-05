@@ -1,3 +1,4 @@
+package Ejercicio400;
 public class Validacion {
 
     public static double calcularDivision(double numerador, double denominador) {

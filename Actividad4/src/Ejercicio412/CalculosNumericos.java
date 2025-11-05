@@ -1,3 +1,4 @@
+package Ejercicio412;
 import java.util.InputMismatchException;
 
 public class CalculosNumericos {
