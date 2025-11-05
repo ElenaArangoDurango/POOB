@@ -2,78 +2,109 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class VentanaPrincipal extends JFrame {
-    private JTextField txtNumero, txtRaiz, txtLog;
-    private JButton btnCalcular, btnLimpiar;
+public class VentanaPrincipal extends JFrame implements ActionListener {
+    private JTextField txtNum, txtDen, txtRes, txtTexto;
+    private JLabel lblMsgError, lblMsgTexto;
+    private JButton btnCalc, btnLimpiar;
 
     public VentanaPrincipal() {
-        setTitle("Cálculos Numéricos");
-        setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(4, 2, 10, 10));
+        setTitle("División");
+        setSize(320, 260);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(null);
         setLocationRelativeTo(null);
 
-        JLabel lblNumero = new JLabel("Ingrese un número:");
-        txtNumero = new JTextField();
+        // Campos y etiquetas
+        add(new JLabel("Numerador:")).setBounds(20, 20, 100, 25);
+        txtNum = new JTextField();
+        txtNum.setBounds(130, 20, 130, 25);
+        add(txtNum);
 
-        JLabel lblRaiz = new JLabel("Raíz cuadrada:");
-        txtRaiz = new JTextField();
-        txtRaiz.setEditable(false);
+        add(new JLabel("Denominador:")).setBounds(20, 55, 100, 25);
+        txtDen = new JTextField();
+        txtDen.setBounds(130, 55, 130, 25);
+        add(txtDen);
 
-        JLabel lblLog = new JLabel("Logaritmo neperiano:");
-        txtLog = new JTextField();
-        txtLog.setEditable(false);
+        add(new JLabel("Resultado:")).setBounds(20, 90, 100, 25);
+        txtRes = new JTextField();
+        txtRes.setBounds(130, 90, 130, 25);
+        txtRes.setEditable(false);
+        add(txtRes);
 
-        btnCalcular = new JButton("Calcular");
+        add(new JLabel("Texto:")).setBounds(20, 125, 100, 25);
+        txtTexto = new JTextField();
+        txtTexto.setBounds(130, 125, 130, 25);
+        add(txtTexto);
+
+        // Botones
+        btnCalc = new JButton("Calcular");
+        btnCalc.setBounds(50, 160, 90, 25);
+        btnCalc.addActionListener(this);
+        add(btnCalc);
+
         btnLimpiar = new JButton("Limpiar");
+        btnLimpiar.setBounds(160, 160, 90, 25);
+        btnLimpiar.addActionListener(this);
+        add(btnLimpiar);
 
-        btnCalcular.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        try {
-            double valor = Double.parseDouble(txtNumero.getText());
+        // Mensajes
+        lblMsgError = new JLabel();
+        lblMsgError.setBounds(30, 190, 250, 25);
+        lblMsgError.setForeground(Color.RED);
+        add(lblMsgError);
 
-            // Validación de número negativo o cero
-            if (valor <= 0) {
-                JOptionPane.showMessageDialog(
-                    null,
-                    "El valor debe ser un número positivo para calcular la raíz cuadrada y el logaritmo.",
-                    "Error de valor",
-                    JOptionPane.ERROR_MESSAGE
-                );
-                txtRaiz.setText("");
-                txtLog.setText("");
-                return; // sale del método sin calcular
-            }
+        lblMsgTexto = new JLabel();
+        lblMsgTexto.setBounds(30, 210, 250, 25);
+        lblMsgTexto.setForeground(new Color(0, 128, 0)); // verde
+        add(lblMsgTexto);
 
-            // Si es positivo, calcula normalmente
-            double raiz = CalculosNumericos.calcularRaizCuadrada(valor);
-            double log = CalculosNumericos.calcularLogaritmoNeperiano(valor);
-
-            txtRaiz.setText(String.valueOf(raiz));
-            txtLog.setText(String.valueOf(log));
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(
-                null,
-                "Debe ingresar un número válido.",
-                "Error de formato",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+        setVisible(true);
     }
-});
 
-        btnLimpiar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                txtNumero.setText("");
-                txtRaiz.setText("");
-                txtLog.setText("");
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnCalc) {
+            lblMsgError.setText("");
+            lblMsgTexto.setText("");
+            txtRes.setText("");
+
+            try {
+                double num = Double.parseDouble(txtNum.getText());
+                double den = Double.parseDouble(txtDen.getText());
+                String texto = txtTexto.getText().trim();
+
+                // 1️⃣ Validar denominador
+                if (den <= 0) {
+                    lblMsgError.setText("Denominador debe ser mayor a 0");
+                    return;
+                }
+
+                // 2️⃣ Calcular división
+                double res = Validacion.calcularDivision(num, den);
+                txtRes.setText(String.valueOf(res));
+
+                // 3️⃣ Validar texto (no bloquea cálculo)
+                if (texto.isEmpty()) {
+                    lblMsgTexto.setText("Texto vacío");
+                } else {
+                    lblMsgTexto.setText("Texto: " + Validacion.ObtenerTexto(texto));
+                }
+
+                // Ejecutar bloques try del ejercicio base
+                ManejoExcepciones.ejecutarBloques();
+
+            } catch (NumberFormatException ex) {
+                lblMsgError.setText("Ingresa solo números válidos");
             }
-        });
+        }
 
-        add(lblNumero); add(txtNumero);
-        add(lblRaiz); add(txtRaiz);
-        add(lblLog); add(txtLog);
-        add(btnCalcular); add(btnLimpiar);
+        if (e.getSource() == btnLimpiar) {
+            txtNum.setText("");
+            txtDen.setText("");
+            txtRes.setText("");
+            txtTexto.setText("");
+            lblMsgError.setText("");
+            lblMsgTexto.setText("");
+        }
     }
 }
